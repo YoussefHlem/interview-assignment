@@ -1,4 +1,5 @@
 import {
+  type InfiniteData,
   queryOptions,
   useInfiniteQuery,
   useQuery,
@@ -6,7 +7,7 @@ import {
   type QueryKey,
 } from "@tanstack/react-query";
 
-import { getTasks } from "@/api/tasks";
+import { getTask, getTasks } from "@/api/tasks";
 import { createOptimisticId } from "@/hooks/utils";
 
 import type {
@@ -43,8 +44,23 @@ export function taskListOptions(params: TaskQueryParams = EMPTY_TASK_PARAMS) {
   });
 }
 
+export function taskDetailOptions(taskId: Task["id"]) {
+  return queryOptions({
+    queryKey: taskQueryKeys.detail(taskId),
+    queryFn: ({ signal }) => getTask(taskId, signal),
+  });
+}
+
 export function useTasks(params: TaskQueryParams = EMPTY_TASK_PARAMS) {
   return useQuery(taskListOptions(params));
+}
+
+export function useTask(taskId?: Task["id"] | null) {
+  return useQuery({
+    queryKey: taskId ? taskQueryKeys.detail(taskId) : taskQueryKeys.details(),
+    queryFn: ({ signal }) => getTask(taskId as Task["id"], signal),
+    enabled: Boolean(taskId),
+  });
 }
 
 export function useInfiniteTasks(params: TaskQueryParams = EMPTY_TASK_PARAMS) {
@@ -111,6 +127,22 @@ export function findCachedTask(
 
   for (const [, taskList] of taskLists) {
     const cachedTask = taskList?.data.find((task) => task.id === taskId);
+
+    if (cachedTask) {
+      return cachedTask;
+    }
+  }
+
+  const infiniteTaskLists = queryClient.getQueriesData<
+    InfiniteData<TasksResponse>
+  >({
+    queryKey: taskQueryKeys.infiniteLists(),
+  });
+
+  for (const [, taskList] of infiniteTaskLists) {
+    const cachedTask = taskList?.pages
+      .flatMap((page) => page.data)
+      .find((task) => task.id === taskId);
 
     if (cachedTask) {
       return cachedTask;

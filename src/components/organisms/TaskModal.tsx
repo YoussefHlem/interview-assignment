@@ -1,5 +1,7 @@
 import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
@@ -21,7 +23,7 @@ import { Avatar, Button, Input, Textarea } from "@/components/atoms";
 import { useAssignees } from "@/hooks/assignees/useAssignees";
 import { useColumns } from "@/hooks/columns/useColumns";
 import { useCreateTask } from "@/hooks/tasks/useCreateTask";
-import { useTasks } from "@/hooks/tasks/useTasks";
+import { findCachedTask, useTask, useTasks } from "@/hooks/tasks/useTasks";
 import { useUpdateTask } from "@/hooks/tasks/useUpdateTask";
 import { useModalStore } from "@/stores/modalStore";
 
@@ -383,22 +385,38 @@ export function TaskModal() {
   );
   const closeTaskModal = useModalStore((state) => state.closeTaskModal);
 
+  const queryClient = useQueryClient();
   const assigneesQuery = useAssignees();
   const columnsQuery = useColumns();
   const tasksQuery = useTasks();
+  const taskDetailQuery = useTask(editingTaskId);
   const assignees = assigneesQuery.data ?? EMPTY_ASSIGNEES;
   const columns = columnsQuery.data ?? EMPTY_COLUMNS;
   const tasks = useMemo(
     () => tasksQuery.data?.data ?? [],
     [tasksQuery.data?.data],
   );
-  const editingTask = useMemo(
-    () => tasks.find((task) => task.id === editingTaskId),
-    [editingTaskId, tasks],
-  );
+  const cachedEditingTask = useMemo(() => {
+    if (!editingTaskId) {
+      return undefined;
+    }
+
+    return (
+      tasks.find((task) => task.id === editingTaskId) ??
+      findCachedTask(queryClient, editingTaskId)
+    );
+  }, [editingTaskId, queryClient, tasks]);
+  const editingTask = cachedEditingTask ?? taskDetailQuery.data;
   const isEditing = Boolean(editingTaskId);
-  const isLoadingTask = isEditing && tasksQuery.isLoading && !editingTask;
-  const cannotFindTask = isEditing && !tasksQuery.isLoading && !editingTask;
+  const isLoadingTask =
+    isEditing &&
+    !editingTask &&
+    (tasksQuery.isLoading || taskDetailQuery.isLoading);
+  const cannotFindTask =
+    isEditing &&
+    !editingTask &&
+    !tasksQuery.isLoading &&
+    !taskDetailQuery.isLoading;
 
   return (
     <Dialog
