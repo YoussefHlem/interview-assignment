@@ -1,5 +1,7 @@
+import { BoardPage } from "@/pages/BoardPage.tsx";
+
 function App() {
-  return <></>;
+  return <BoardPage />;
 }
 
 export default App;
