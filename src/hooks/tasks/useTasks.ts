@@ -1,5 +1,6 @@
 import {
   queryOptions,
+  useInfiniteQuery,
   useQuery,
   type QueryClient,
   type QueryKey,
@@ -24,6 +25,11 @@ export const taskQueryKeys = {
     ...taskQueryKeys.lists(),
     params,
   ],
+  infiniteLists: () => [...taskQueryKeys.all, "infinite-list"],
+  infiniteList: (params: TaskQueryParams = EMPTY_TASK_PARAMS) => [
+    ...taskQueryKeys.infiniteLists(),
+    params,
+  ],
   details: () => [...taskQueryKeys.all, "detail"],
   detail: (taskId: Task["id"]) => [...taskQueryKeys.details(), taskId],
 };
@@ -39,6 +45,29 @@ export function taskListOptions(params: TaskQueryParams = EMPTY_TASK_PARAMS) {
 
 export function useTasks(params: TaskQueryParams = EMPTY_TASK_PARAMS) {
   return useQuery(taskListOptions(params));
+}
+
+export function useInfiniteTasks(params: TaskQueryParams = EMPTY_TASK_PARAMS) {
+  return useInfiniteQuery({
+    queryKey: taskQueryKeys.infiniteList(params),
+    queryFn: ({ pageParam, signal }) =>
+      getTasks(
+        {
+          ...params,
+          page: pageParam,
+        },
+        signal,
+      ),
+    initialPageParam: params.page ?? 1,
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      const loadedTasks = allPages.reduce(
+        (loadedCount, page) => loadedCount + page.data.length,
+        0,
+      );
+
+      return loadedTasks < lastPage.items ? lastPageParam + 1 : undefined;
+    },
+  });
 }
 
 export function getTaskListParams(
