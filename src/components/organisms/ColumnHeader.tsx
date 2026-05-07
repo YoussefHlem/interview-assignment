@@ -31,6 +31,8 @@ export function ColumnHeader({
   sx,
   taskCount,
 }: ColumnHeaderProps) {
+  const hasTasks = taskCount > 0;
+
   return (
     <Box
       component="header"
@@ -126,18 +128,25 @@ export function ColumnHeader({
       )}
 
       {onDelete && (
-        <Tooltip title="Delete column">
-          <IconButton
-            aria-label={`Delete ${column.title}`}
-            color="error"
-            onClick={() => onDelete(column)}
-            size="small"
-            sx={{
-              color: "#9aa1a8",
-            }}
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
+        <Tooltip
+          title={hasTasks ? "Move or delete tasks first" : "Delete column"}
+        >
+          <Box component="span" sx={{ display: "inline-flex" }}>
+            <IconButton
+              aria-label={`Delete ${column.title}`}
+              color="error"
+              disabled={hasTasks}
+              onClick={() => {
+                onDelete(column);
+              }}
+              size="small"
+              sx={{
+                color: "#9aa1a8",
+              }}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Box>
         </Tooltip>
       )}
     </Box>
