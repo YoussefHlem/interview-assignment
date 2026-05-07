@@ -6,11 +6,12 @@ import type {
   UpdateAssigneePayload,
 } from "@/types/assignees";
 
-export async function getAssignees(): Promise<Assignee[]> {
+export async function getAssignees(signal?: AbortSignal): Promise<Assignee[]> {
   const response = await apiClient.get<Assignee[]>("/assignees", {
     params: {
       _sort: "name",
     },
+    signal,
   });
 
   return response.data;
@@ -18,8 +19,12 @@ export async function getAssignees(): Promise<Assignee[]> {
 
 export async function getAssignee(
   assigneeId: Assignee["id"],
+  signal?: AbortSignal,
 ): Promise<Assignee> {
-  const response = await apiClient.get<Assignee>(`/assignees/${assigneeId}`);
+  const response = await apiClient.get<Assignee>(
+    `/assignees/${assigneeId}`,
+    { signal },
+  );
 
   return response.data;
 }

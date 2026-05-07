@@ -12,16 +12,21 @@ import type {
 
 export async function getTasks(
   params: TaskQueryParams = {},
+  signal?: AbortSignal,
 ): Promise<TasksResponse> {
   const response = await apiClient.get<TasksResponse>("/tasks", {
     params: buildTaskQueryParams(params),
+    signal,
   });
 
   return response.data;
 }
 
-export async function getTask(taskId: Task["id"]): Promise<Task> {
-  const response = await apiClient.get<Task>(`/tasks/${taskId}`);
+export async function getTask(
+  taskId: Task["id"],
+  signal?: AbortSignal,
+): Promise<Task> {
+  const response = await apiClient.get<Task>(`/tasks/${taskId}`, { signal });
 
   return response.data;
 }

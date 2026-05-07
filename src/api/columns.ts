@@ -6,11 +6,12 @@ import type {
   UpdateColumnPayload,
 } from "@/types/columns";
 
-export async function getColumns(): Promise<BoardColumn[]> {
+export async function getColumns(signal?: AbortSignal): Promise<BoardColumn[]> {
   const response = await apiClient.get<BoardColumn[]>("/columns", {
     params: {
       _sort: "order",
     },
+    signal,
   });
 
   return response.data;
@@ -18,8 +19,11 @@ export async function getColumns(): Promise<BoardColumn[]> {
 
 export async function getColumn(
   columnId: BoardColumn["id"],
+  signal?: AbortSignal,
 ): Promise<BoardColumn> {
-  const response = await apiClient.get<BoardColumn>(`/columns/${columnId}`);
+  const response = await apiClient.get<BoardColumn>(`/columns/${columnId}`, {
+    signal,
+  });
 
   return response.data;
 }
