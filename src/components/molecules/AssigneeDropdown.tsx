@@ -95,7 +95,7 @@ export function AssigneeDropdown({
           spacing={1}
           sx={{ alignItems: "center", minWidth: 0 }}
         >
-          {selectedAssignees.length > 0 ? (
+          {selectedAssignees.length > 0 && (
             <Stack direction="row" sx={{ "& .MuiAvatar-root": { ml: -0.5 } }}>
               {selectedAssignees.slice(0, 3).map((assignee) => (
                 <Avatar
@@ -112,7 +112,7 @@ export function AssigneeDropdown({
                 />
               ))}
             </Stack>
-          ) : null}
+          )}
           <Typography component="span" noWrap variant="body2">
             {loading ? "Loading" : buttonLabel}
           </Typography>
@@ -171,7 +171,7 @@ export function AssigneeDropdown({
             );
           })
         )}
-        {selectedAssigneeIds.length > 0 ? (
+        {selectedAssigneeIds.length > 0 && (
           <Box sx={{ borderTop: 1, borderColor: "divider", mt: 0.5, pt: 0.5 }}>
             <MenuItem onClick={() => onChange([])}>
               <Typography color="text.secondary" variant="body2">
@@ -179,7 +179,7 @@ export function AssigneeDropdown({
               </Typography>
             </MenuItem>
           </Box>
-        ) : null}
+        )}
       </Menu>
     </>
   );
