@@ -7,16 +7,19 @@ export const useModalStore = create<ModalState>((set) => ({
   isColumnModalOpen: false,
 
   editingTaskId: null,
+  creatingTaskColumnId: null,
   editingColumnId: null,
 
-  openTaskModal: (taskId) => {
+  openTaskModal: (taskId, columnId) => {
     set({
+      creatingTaskColumnId: taskId ? null : (columnId ?? null),
       isTaskModalOpen: true,
       editingTaskId: taskId ?? null,
     });
   },
   closeTaskModal: () => {
     set({
+      creatingTaskColumnId: null,
       isTaskModalOpen: false,
       editingTaskId: null,
     });
