@@ -44,7 +44,7 @@ export function SearchInput({
           "aria-label": placeholder,
         },
         input: {
-          endAdornment: value ? (
+          endAdornment: Boolean(value) && (
             <InputAdornment position="end">
               <IconButton
                 aria-label="Clear search"
@@ -55,7 +55,7 @@ export function SearchInput({
                 <ClearIcon fontSize="small" />
               </IconButton>
             </InputAdornment>
-          ) : null,
+          ),
           startAdornment: (
             <InputAdornment position="start">
               <SearchIcon color="action" fontSize="small" />
