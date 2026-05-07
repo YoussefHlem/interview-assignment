@@ -30,6 +30,14 @@ export type TaskDropDndData = {
 
 export type BoardDndData = ColumnDndData | TaskDndData | TaskDropDndData;
 
+export function isTaskDndData(data: unknown): data is TaskDndData {
+  if (!data || typeof data !== "object" || !("kind" in data)) {
+    return false;
+  }
+
+  return data.kind === "task";
+}
+
 export function getColumnDndId(columnId: BoardColumn["id"]) {
   return `column:${columnId}`;
 }

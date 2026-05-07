@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 
 import {
   getTaskDndId,
+  isTaskDndData,
   TASK_DND_TYPE,
   type TaskDndData,
 } from "@/components/dnd/boardDnd";
@@ -59,7 +60,8 @@ export function TaskCard({
     isDropTarget,
     ref: sortableRef,
   } = useSortable<TaskDndData>({
-    accept: TASK_DND_TYPE,
+    accept: (source) =>
+      isTaskDndData(source.data) && source.data.columnId === task.columnId,
     data: taskDndData,
     group: task.columnId,
     id: getTaskDndId(task.id),
