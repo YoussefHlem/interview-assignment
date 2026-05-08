@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 import type { ModalState } from "@/stores/types/modalStore.types";
 
+// Resitting the Ids in Eventloop using setTimeOut solving an issue of resetting the data upon closeing modal before its get closed.
 export const useModalStore = create<ModalState>((set) => ({
   isTaskModalOpen: false,
   isColumnModalOpen: false,
@@ -19,10 +20,15 @@ export const useModalStore = create<ModalState>((set) => ({
   },
   closeTaskModal: () => {
     set({
-      creatingTaskColumnId: null,
       isTaskModalOpen: false,
-      editingTaskId: null,
     });
+
+    setTimeout(() => {
+      set({
+        creatingTaskColumnId: null,
+        editingTaskId: null,
+      });
+    }, 0);
   },
   openColumnModal: (columnId) => {
     set({
@@ -33,7 +39,12 @@ export const useModalStore = create<ModalState>((set) => ({
   closeColumnModal: () => {
     set({
       isColumnModalOpen: false,
-      editingColumnId: null,
     });
+
+    setTimeout(() => {
+      set({
+        editingColumnId: null,
+      });
+    }, 0);
   },
 }));

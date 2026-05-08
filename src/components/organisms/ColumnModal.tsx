@@ -125,7 +125,7 @@ function ColumnModalForm({
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          pt: 1,
+          paddingTop: "10px !important",
         }}
       >
         {mutationError && (
