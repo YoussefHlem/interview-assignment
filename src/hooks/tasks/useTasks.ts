@@ -267,12 +267,20 @@ export function removeTaskFromResponse(
 
 function taskMatchesParams(task: Task, params: TaskQueryParams) {
   const search = params.search?.trim().toLowerCase();
+  const assigneeIds = params.assigneeIds;
 
   if (params.columnId && task.columnId !== params.columnId) {
     return false;
   }
 
   if (params.priorities?.length && !params.priorities.includes(task.priority)) {
+    return false;
+  }
+
+  if (
+    assigneeIds?.length &&
+    !task.assigneeIds.some((assigneeId) => assigneeIds.includes(assigneeId))
+  ) {
     return false;
   }
 

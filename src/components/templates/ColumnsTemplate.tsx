@@ -1,6 +1,7 @@
 import type { DragEndEvent } from "@dnd-kit/react";
 import { DragDropProvider } from "@dnd-kit/react";
 import { isSortableOperation } from "@dnd-kit/react/sortable";
+
 import AddIcon from "@mui/icons-material/Add";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -8,6 +9,7 @@ import type { SxProps, Theme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 
 import { Button } from "@/components/atoms";
+
 import {
   getColumnOrderBetween,
   getTaskOrderBetween,
@@ -15,7 +17,9 @@ import {
   type TaskDndData,
   type TaskDropDndData,
 } from "@/components/dnd/boardDnd";
+
 import { BoardColumn } from "@/components/organisms";
+
 import type { Assignee } from "@/types/assignees";
 import type { BoardColumn as BoardColumnType } from "@/types/columns";
 import type { Task, TaskQueryParams } from "@/types/tasks";
@@ -40,7 +44,6 @@ export interface ColumnsTemplateProps {
     columnId: BoardColumnType["id"],
     order: Task["order"],
   ) => void;
-  selectedAssigneeIds?: Assignee["id"][];
   sx?: SxProps<Theme>;
   taskQueryParams?: TaskQueryParams;
 }
@@ -66,7 +69,6 @@ export function ColumnsTemplate({
   onEditTask,
   onMoveColumn,
   onMoveTask,
-  selectedAssigneeIds = [],
   sx,
   taskQueryParams,
 }: ColumnsTemplateProps) {
@@ -126,8 +128,7 @@ export function ColumnsTemplate({
       return;
     }
 
-    const taskTargetData =
-      targetData.kind === "task" ? targetData : undefined;
+    const taskTargetData = targetData.kind === "task" ? targetData : undefined;
     const taskDropTargetData =
       targetData.kind === "task-drop" ? targetData : undefined;
 
@@ -205,7 +206,6 @@ export function ColumnsTemplate({
             onDeleteTask={onDeleteTask}
             onEditColumn={onEditColumn}
             onEditTask={onEditTask}
-            selectedAssigneeIds={selectedAssigneeIds}
             taskQueryParams={taskQueryParams}
           />
         ))}

@@ -14,7 +14,6 @@ import {
   COLUMN_DND_TYPE,
   getColumnDndId,
   getTaskDropDndId,
-  hasSelectedAssignee,
   isTaskDndData,
   TASK_DROP_DND_TYPE,
   type ColumnDndData,
@@ -41,7 +40,6 @@ export interface BoardColumnProps {
   onDeleteTask?: (task: Task) => void;
   onEditColumn?: (column: BoardColumnType) => void;
   onEditTask?: (task: Task) => void;
-  selectedAssigneeIds?: Assignee["id"][];
   sx?: SxProps<Theme>;
   taskQueryParams?: TaskQueryParams;
 }
@@ -56,7 +54,6 @@ export function BoardColumn({
   onDeleteTask,
   onEditColumn,
   onEditTask,
-  selectedAssigneeIds = [],
   sx,
   taskQueryParams = {},
 }: BoardColumnProps) {
@@ -72,16 +69,9 @@ export function BoardColumn({
     () => tasksQuery.data?.pages.flatMap((page) => page.data) ?? [],
     [tasksQuery.data?.pages],
   );
-  const visibleTasks = useMemo(() => {
-    return loadedTasks.filter((task) =>
-      hasSelectedAssignee(task, selectedAssigneeIds),
-    );
-  }, [loadedTasks, selectedAssigneeIds]);
   const totalColumnTasks =
     tasksQuery.data?.pages[0]?.items ?? loadedTasks.length;
-  const taskCount =
-    selectedAssigneeIds.length > 0 ? visibleTasks.length : totalColumnTasks;
-  const lastVisibleTaskOrder = visibleTasks[visibleTasks.length - 1]?.order;
+  const lastLoadedTaskOrder = loadedTasks[loadedTasks.length - 1]?.order;
   const columnDndData: ColumnDndData = {
     column,
     index: columnIndex,
@@ -90,7 +80,7 @@ export function BoardColumn({
   const taskDropDndData: TaskDropDndData = {
     columnId: column.id,
     kind: "task-drop",
-    previousOrder: lastVisibleTaskOrder,
+    previousOrder: lastLoadedTaskOrder,
   };
   const {
     handleRef: columnHandleRef,
@@ -146,7 +136,7 @@ export function BoardColumn({
         dragHandleProps={dragHandleProps}
         onDelete={onDeleteColumn}
         onEdit={onEditColumn}
-        taskCount={taskCount}
+        taskCount={totalColumnTasks}
       />
       <Box
         sx={{
@@ -173,7 +163,7 @@ export function BoardColumn({
               : undefined,
             transition: "background-color 160ms ease",
           }}
-          tasks={visibleTasks}
+          tasks={loadedTasks}
         />
 
         {isTaskDropTarget && (

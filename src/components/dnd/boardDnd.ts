@@ -1,4 +1,3 @@
-import type { Assignee } from "@/types/assignees";
 import type { BoardColumn } from "@/types/columns";
 import type { Task } from "@/types/tasks";
 
@@ -88,14 +87,3 @@ export function getColumnOrderBetween(
   return (previousOrder + nextOrder) / 2;
 }
 
-export function hasSelectedAssignee(
-  task: Task,
-  selectedAssigneeIds: Assignee["id"][],
-) {
-  return (
-    selectedAssigneeIds.length === 0 ||
-    task.assigneeIds.some((assigneeId) =>
-      selectedAssigneeIds.includes(assigneeId),
-    )
-  );
-}

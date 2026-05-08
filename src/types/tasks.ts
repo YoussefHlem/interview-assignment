@@ -15,13 +15,6 @@ export type TasksResponse = {
   items: number;
 };
 
-export type NormalizedTasksResponse = {
-  data: Task[];
-  total: number;
-  page: number;
-  limit: number;
-};
-
 export type CreateTaskPayload = Omit<Task, "id">;
 
 export type UpdateTaskPayload = Partial<CreateTaskPayload>;
@@ -31,5 +24,6 @@ export type TaskQueryParams = {
   perPage?: number;
   columnId?: string;
   priorities?: Priority[];
+  assigneeIds?: string[];
   search?: string;
 };

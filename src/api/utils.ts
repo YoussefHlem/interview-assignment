@@ -7,6 +7,9 @@ type TaskWhereParams = {
   priority?: {
     in: Priority[];
   };
+  assigneeIds?: {
+    in: string[];
+  };
   or?: (
     | {
         title: {
@@ -34,6 +37,12 @@ export function buildTaskQueryParams(params: TaskQueryParams = {}) {
   if (params.priorities?.length) {
     where.priority = {
       in: params.priorities,
+    };
+  }
+
+  if (params.assigneeIds?.length) {
+    where.assigneeIds = {
+      in: params.assigneeIds,
     };
   }
 

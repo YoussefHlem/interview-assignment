@@ -4,14 +4,17 @@ import { useShallow } from "zustand/react/shallow";
 import { ModalRoot } from "@/components/modals";
 import { Header } from "@/components/organisms";
 import { BoardTemplate, ColumnsTemplate } from "@/components/templates";
+
 import { useAssignees } from "@/hooks/assignees/useAssignees";
 import { useColumns } from "@/hooks/columns/useColumns";
 import { useDeleteColumn } from "@/hooks/columns/useDeleteColumn";
 import { useMoveColumn } from "@/hooks/columns/useMoveColumn";
 import { useDeleteTask } from "@/hooks/tasks/useDeleteTask";
 import { useMoveTask } from "@/hooks/tasks/useMoveTask";
+
 import { useFiltersStore } from "@/stores/filtersStore";
 import { useModalStore } from "@/stores/modalStore";
+
 import type { Assignee } from "@/types/assignees";
 import type { BoardColumn } from "@/types/columns";
 import type { TaskQueryParams } from "@/types/tasks";
@@ -39,9 +42,10 @@ export function BoardPage() {
     () => ({
       priorities:
         selectedPriorities.length > 0 ? selectedPriorities : undefined,
+      assigneeIds: selectedAssignees.length > 0 ? selectedAssignees : undefined,
       search: searchQuery.trim() || undefined,
     }),
-    [searchQuery, selectedPriorities],
+    [searchQuery, selectedAssignees, selectedPriorities],
   );
 
   const columnsQuery = useColumns();
@@ -76,7 +80,6 @@ export function BoardPage() {
           onMoveTask={(task, columnId, order) =>
             moveTaskMutation.mutate({ columnId, order, taskId: task.id })
           }
-          selectedAssigneeIds={selectedAssignees}
           taskQueryParams={taskQueryParams}
         />
       </BoardTemplate>
