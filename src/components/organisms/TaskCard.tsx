@@ -84,9 +84,7 @@ export function TaskCard({
           display: "flex",
           flexDirection: "column",
           gap: 1.25,
-          minHeight: 166,
           p: 3,
-          position: "relative",
           transition: "border-color 160ms ease, box-shadow 160ms ease",
           width: "100%",
           opacity: isDragging ? 0.45 : 1,
@@ -107,36 +105,63 @@ export function TaskCard({
     >
       <Box
         sx={{
+          alignItems: "flex-start",
+          display: "flex",
+          gap: 1,
           minHeight: 0,
+          minWidth: 0,
         }}
       >
-        <Typography
-          component="h3"
+        <Box
           sx={{
-            color: "text.primary",
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-            fontSize: 17,
-            fontWeight: 700,
-            letterSpacing: 0,
-            lineHeight: 1.35,
-            overflowWrap: "anywhere",
-            pr: hasActions ? 5 : 0,
+            display: "flex",
+            flex: 1,
+            flexDirection: "column",
+            gap: 1,
+            minWidth: 0,
           }}
         >
-          {task.title}
-        </Typography>
+          <Typography
+            component="h3"
+            sx={{
+              color: "text.primary",
+              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+              fontSize: 17,
+              fontWeight: 700,
+              letterSpacing: 0,
+              lineHeight: 1.35,
+              minWidth: 0,
+              overflowWrap: "anywhere",
+            }}
+          >
+            {task.title}
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#52647a",
+              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+              fontSize: 14,
+              fontWeight: 700,
+              lineHeight: 1.5,
+              minWidth: 0,
+              overflowWrap: "anywhere",
+            }}
+            variant="body2"
+          >
+            {task.description}
+          </Typography>
+        </Box>
 
         {hasActions && (
           <Box
             className="TaskCard-actions"
             sx={{
               display: "flex",
+              flexShrink: 0,
               gap: 0.25,
               opacity: 0,
               pointerEvents: "none",
-              position: "absolute",
-              right: 12,
-              top: 12,
               transition: "opacity 160ms ease",
             }}
           >
@@ -182,20 +207,6 @@ export function TaskCard({
           </Box>
         )}
       </Box>
-
-      <Typography
-        sx={{
-          color: "#52647a",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: 14,
-          fontWeight: 700,
-          lineHeight: 1.5,
-          overflowWrap: "anywhere",
-        }}
-        variant="body2"
-      >
-        {task.description}
-      </Typography>
 
       <Box
         sx={{
